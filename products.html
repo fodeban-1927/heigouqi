@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杞生芬馨 - 青海黑枸杞产品介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: #f8f8ff;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #d8bfd8, #9370db);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .slogan {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        /* 导航栏 */
+        nav {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 15px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #9370db;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            background: #f0e6fa;
+            color: #8a2be2;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            color: #9370db;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #ffb74d;
+            padding-bottom: 10px;
+        }
+        
+        .subsection-title {
+            color: #8a2be2;
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+        }
+        
+        /* 产品网格 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: linear-gradient(135deg, #f8f8ff, #e6e6fa);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid #d8bfd8;
+            box-shadow: 0 4px 10px rgba(147, 112, 219, 0.1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(147, 112, 219, 0.2);
+        }
+        
+        .product-icon {
+            font-size:2.5rem;
+            color: #9370db;
+            margin-bottom: 15px;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .product-desc {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .product-image img {
+            max-width: 100%;
+            height: 100%;
+            object-fit: cover; /* 确保图片比例正确 */
+        }
+        /* 营养价值部分 */
+        .nutrition-facts {
+            background: linear-gradient(135deg, #e6e6fa, #f8f8ff);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #9370db;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #9370db, #8a2be2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(45deg, #8a2be2, #9370db);
+            box-shadow: 0 6px 15px rgba(147, 112, 219, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* 底部样式 */
+        footer {
+            background: linear-gradient(135deg, #9370db, #8a2be2);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            color: white;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #ffb74d;
+        }
+        /* 产品展示区 - 淡紫色主题 */
+        .products-section {
+            margin: 80px 0;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(147, 112, 219, 0.1); /* 紫色阴影 */
+        }
+        
+        .product-image {
+            height: 200px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+        
+        .product-content {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #9370db; /* 中紫色 */
+        }
+        
+        .product-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .product-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #9370db; /* 中紫色 */
+            margin-bottom: 15px;
+        }
+        
+        .product-button {
+            background: #9370db; /* 中紫色 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .product-button:hover {
+            background: #8a2be2; /* 深紫色 */
+        }
+        
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 5px 0;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">杞生芬馨</div>
+        <div class="slogan">青海黑枸杞 · 把健康寄给世界</div>
+        
+        <nav>
+            <ul>
+                <li><a href="#about">产品介绍</a></li>
+                <li><a href="#nutrition">营养价值</a></li>
+                <li><a href="#products">产品系列</a></li>
+                <li><a href="#advantage">产地优势</a></li>
+                <li><a href="#purchase">购买方式</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <main class="main-content">
+            <!-- 产品介绍部分 -->
+            <section id="about" class="section">
+                <h2 class="section-title">黑枸杞产品介绍</h2>
+                <p>青海黑枸杞被誉为"软黄金"和"高原红宝石"，生长于青藏高原纯净无污染的环境中，富含多种营养成分，具有极高的养生保健价值。杞生芬馨黑枸杞产品采用先进工艺精心制作，保留天然营养成分，为您带来健康与美味的完美体验。</p>
+                
+                <div class="nutrition-facts">
+                    <h3 class="subsection-title">核心优势</h3>
+                    <ul>
+                        <li><strong>高原纯净</strong>：生长于海拔3000米以上的青藏高原，无污染环境</li>
+                        <li><strong>营养丰富</strong>：花青素含量是普通枸杞的10倍以上</li>
+                        <li><strong>传统工艺</strong>：结合现代科技与传统加工方法，保留天然活性成分</li>
+                        <li><strong>多重认证</strong>：获得有机认证、欧盟认证等多重质量保证</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- 营养价值部分 -->
+            <section id="nutrition" class="section">
+                <h2 class="section-title">营养价值与功效</h2>
+                <p>黑枸杞富含花青素、多种维生素、氨基酸和矿物质，具有抗氧化、抗衰老、保护视力、增强免疫力等多种功效。</p>
+                
+                <h3 class="subsection-title">主要营养成分</h3>
+                <div class="nutrition-facts">
+                    <ul>
+                        <li><strong>花青素</strong>：含量高达8.21-31.46mg/g，具有极强的抗氧化能力</li>
+                        <li><strong>多糖</strong>：增强免疫力，调节血糖</li>
+                        <li><strong>氨基酸</strong>：含18种人体必需氨基酸</li>
+                        <li><strong>维生素</strong>：富含维生素C、维生素E等多种维生素</li>
+                        <li><strong>矿物质</strong>：富含铁、锌、钙、硒等微量元素</li>
+                    </ul>
+                </div>
+                
+                <h3 class="subsection-title">保健功效</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-heart"></i></div>
+                        <h4 class="product-name">抗氧化抗衰老</h4>
+                        <p class="product-desc">花青素能有效清除自由基，延缓细胞衰老，保持肌肤年轻状态。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-eye"></i></div>
+                        <h4 class="product-name">保护视力</h4>
+                        <p class="product-desc">缓解视疲劳，预防近视，改善夜间视力，保护眼睛健康。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h4 class="product-name">增强免疫力</h4>
+                        <p class="product-desc">多糖和氨基酸能增强机体免疫力，提高抗病能力。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 产品系列部分 -->
+            <section id="products" class="section">
+                <h2 class="section-title">产品系列</h2>
+                <p>杞生芬馨提供多种黑枸杞产品，满足不同消费者的需求，从传统干果到创新深加工产品，一应俱全。</p>
+                
+                <h3 class="subsection-title">食品饮料系列</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-apple-alt"></i></div>
+                        <h4 class="product-name">黑枸杞干果</h4>
+                        <p class="product-desc">精选特级黑枸杞，颗粒饱满，色泽自然，适合直接食用或泡茶。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-wine-bottle"></i></div>
+                        <h4 class="product-name">黑枸杞原浆</h4>
+                        <p class="product-desc">100%纯黑枸杞提取，保留全部营养成分，易于吸收。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-coffee"></i></div>
+                        <h4 class="product-name">黑枸杞能量咖啡</h4>
+                        <p class="product-desc">黑枸杞与咖啡的完美结合，提神醒脑与养生保健双重功效。</p>
+                    </div>
+                </div>
+                
+                <h3 class="subsection-title">保健品系列</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-capsules"></i></div>
+                        <h4 class="product-name">黑枸杞胶囊</h4>
+                        <p class="product-desc">高浓度花青素提取，便于服用，适合日常保健。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-mortar-pestle"></i></div>
+                        <h4 class="product-name">黑枸杞胶原蛋白肽</h4>
+                        <p class="product-desc">黑枸杞与胶原蛋白的黄金组合，美容养颜，延缓衰老。</p>
+                    </div>
+                </div>
+                
+                <h3 class="subsection-title">化妆品系列</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-spa"></i></div>
+                        <h4 class="product-name">黑枸杞面膜</h4>
+                        <p class="product-desc">富含花青素，深层滋养肌肤，改善肤质，提亮肤色。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-pump-soap"></i></div>
+                        <h4 class="product-name">黑枸杞精华液</h4>
+                        <p class="product-desc">高浓度提取，抗氧化，抗皱紧致，恢复肌肤弹性。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 产地优势部分 -->
+            <section id="advantage" class="section">
+                <h2 class="section-title">青海产地优势</h2>
+                <p>青海柴达木盆地是世界"四大超净区"之一，拥有得天独厚的自然环境，为黑枸杞生长提供了理想条件。</p>
+                
+                <div class="nutrition-facts">
+                    <h3 class="subsection-title">自然环境优势</h3>
+                    <ul>
+                        <li><strong>高海拔</strong>：海拔3000米以上，日照时间长，太阳辐射强</li>
+                        <li><strong>昼夜温差大</strong>：利于营养成分积累，糖分和花青素含量高</li>
+                        <li><strong>纯净水源</strong>：昆仑山雪水灌溉，无污染</li>
+                        <li><strong>有机土壤</strong>：富含矿物质，无农药残留</li>
+                    </ul>
+                </div>
+                
+                <h3 class="subsection-title">品质认证</h3>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-award"></i></div>
+                        <h4 class="product-name">有机认证</h4>
+                        <p class="product-desc">获得中国有机产品认证，种植过程无化学农药、无化肥。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-globe-europe"></i></div>
+                        <h4 class="product-name">欧盟认证</h4>
+                        <p class="product-desc">通过欧盟有机认证，符合国际标准，可出口欧盟国家。</p>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h4 class="product-name">地理标志保护</h4>
+                        <p class="product-desc">"柴达木黑枸杞"获国家地理标志产品保护，品质有保障。</p>
+                    </div>
+                </div>
+            </section>
+            <!-- 产品展示区 -->
+        <section class="products-section">
+            <h2 class="section-title">精选产品</h2>
+            <p class="section-subtitle">我们提供多种黑枸杞系列产品，满足您的不同需求</p>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="gouqizhi.jpg" alt="黑枸杞原浆" class="product-img">
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">黑枸杞原浆</h3>
+                        <p class="product-description">黑枸杞原浆易吸收养颜</p>
+                        <div class="product-price">¥</div>
+                        <button class="product-button">加入购物车</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="ganguo.jpg" alt="黑枸杞干果" class="product-img">
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">黑枸杞干果</h3>
+                        <p class="product-description">黑枸杞干果便携又滋补</p>
+                        <div class="product-price">¥</div>
+                        <button class="product-button">加入购物车</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="mianmo.jpg" alt="黑枸杞面膜" class="product-img">
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">黑枸杞面膜</h3>
+                        <p class="product-description">黑枸杞面膜美白抗衰老</p>
+                        <div class="product-price">¥</div>
+                        <button class="product-button">加入购物车</button>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <h3>联系我们</h3>
+            <p>客服热线：400-123-4567</p>
+            <p>电子邮件：service@qishengfenxin.com</p>
+            
+            <div class="social-links">
+                <a href="#"><i class="fab fa-weixin"></i></a>
+                <a href="#"><i class="fab fa-weibo"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-xiaohongshu"></i></a>
+            </div>
+            
+            <p>© 2023 杞生芬馨 版权所有 | 保留所有权利</p>
+        </div>
+    </footer>
+</body>
+</html>

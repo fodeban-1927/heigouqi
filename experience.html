@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑枸杞种植模拟游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: #f8f8ff;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(248, 248, 255, 0.95);
+            border-radius: 15px;
+            border: 1px solid #d8bfd8;
+            box-shadow: 0 10px 30px rgba(147, 112, 219, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #d8bfd8, #9370db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .farm-land {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #9370db, #d8bfd8);
+            border-radius: 15px;
+            min-height: 400px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .plot {
+            background: linear-gradient(to bottom, #e6e6fa, #d8bfd8);
+            border: 2px solid #9370db;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(147, 112, 219, 0.2);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plot:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(147, 112, 219, 0.3);
+        }
+
+        .plot.empty::after {
+            content: "点击播种";
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .plant {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .plant-stage {
+            font-size: 3rem;
+            transition: all 0.5s;
+        }
+
+        .controls {
+            flex: 1;
+            background: #F1F8E9;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-btn {
+            background: linear-gradient(45deg, #9370db, #8a2be2);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tool-btn:hover {
+            background: linear-gradient(45deg, #8a2be2, #9370db);
+            box-shadow: 0 6px 20px rgba(147, 112, 219, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tool-btn:disabled {
+            background: #BDBDBD;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #9370db, #8a2be2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(45deg, #8a2be2, #9370db);
+            box-shadow: 0 6px 20px rgba(147, 112, 219, 0.4);
+        }
+
+        .tool-btn i {
+            font-size: 1.5rem;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #e6e6fa, #f8f8ff);
+            padding: 15px;
+            border: 1px solid #d8bfd8;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #E0E0E0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(45deg, #9370db, #8a2be2);
+            box-shadow: 0 2px 8px rgba(147, 112, 219, 0.3);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .game-info {
+            background: linear-gradient(135deg, #f8f8ff, #e6e6fa);
+            border: 1px solid #d8bfd8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .info-tabs {
+            display: flex;
+            border-bottom: 2px solid #FFB74D;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid #9370db;
+            font-weight: bold;
+            color: #9370db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .knowledge-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            border-left: 4px solid #9370db;
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #9370db, #8a2be2);
+            box-shadow: 0 4px 15px rgba(147, 112, 219, 0.4);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 100;
+            display: none;
+        }
+
+        .indicator.active {
+            background: #9370db;
+            box-shadow: 0 2px 6px rgba(147, 112, 219, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+
+            .farm-land {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <header>
+            <h1>黑枸杞种植模拟器</h1>
+            <p class="subtitle">体验从播种到收获的全过程，了解黑枸杞的生长特性</p>
+        </header>
+
+        <div class="game-area">
+            <div class="farm-land" id="farmLand">
+                <!-- 土地地块将由JavaScript动态生成 -->
+            </div>
+
+            <div class="controls">
+                <h2>种植工具</h2>
+                <button class="tool-btn" id="plantBtn">
+                    <i class="fas fa-seedling"></i>
+                    <span>播种黑枸杞</span>
+                </button>
+
+                <button class="tool-btn" id="waterBtn">
+                    <i class="fas fa-tint"></i>
+                    <span>浇水 (剩余: <span id="waterCount">3</span>)</span>
+                </button>
+
+                <button class="tool-btn" id="fertilizeBtn">
+                    <i class="fas fa-leaf"></i>
+                    <span>施肥 (剩余: <span id="fertilizerCount">2</span>)</span>
+                </button>
+
+                <button class="tool-btn" id="harvestBtn" disabled>
+                    <i class="fas fa-hand-holding"></i>
+                    <span>收获黑枸杞</span>
+                </button>
+
+                <div class="stats">
+                    <h3>游戏统计</h3>
+                    <div class="stat-item">
+                        <span>已收获:</span>
+                        <span id="harvestedCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>当前经验:</span>
+                        <span id="expValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>种植等级:</span>
+                        <span id="levelValue">1</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress" id="levelProgress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="info-tabs">
+                <div class="tab active" data-tab="growth">生长过程</div>
+                <div class="tab" data-tab="knowledge">黑枸杞知识</div>
+                <div class="tab" data-tab="instructions">游戏指南</div>
+            </div>
+
+            <div class="tab-content active" id="growthTab">
+                <div class="knowledge-item">
+                    <h4>黑枸杞生长阶段</h4>
+                    <p>1. <strong>播种</strong>: 将黑枸杞种子放入土壤中</p>
+                    <p>2. <strong>发芽</strong>: 约7-10天后种子发芽</p>
+                    <p>3. <strong>幼苗</strong>: 生长出真叶，需适量水分</p>
+                    <p>4. <strong>开花</strong>: 生长3-4年后开始开花</p>
+                    <p>5. <strong>结果</strong>: 花朵授粉后形成绿色果实</p>
+                    <p>6. <strong>成熟</strong>: 果实变为深紫色，富含花青素</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="knowledgeTab">
+                <div class="knowledge-item">
+                    <h4>黑枸杞的特性</h4>
+                    <p>黑枸杞耐旱、耐盐碱，能在-25℃至38℃的环境中生长。它喜欢全光照环境,在庇荫下生长较弱。</p>
+                </div>
+
+                <div class="knowledge-item">
+                    <h4>营养价值</h4>
+                    <p>黑枸杞富含花青素，具有抗氧化、改善循环、保护视力等功效，被誉为"软黄金"。</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="instructionsTab">
+                <div class="knowledge-item">
+                    <h4>如何玩</h4>
+                    <p>1. 点击"播种"按钮，然后点击空土地种植黑枸杞</p>
+                    <p>2. 作物会自动生长，但你可以在关键阶段浇水和施肥加速生长</p>
+                    <p>3. 当黑枸杞成熟时，点击"收获"按钮收集果实</p>
+                    <p>4. 收获作物获得经验值，提升种植等级</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="message" id="gameMessage"></div>
+
+    <script>
+        // 游戏状态管理
+        const gameState = {
+            plots: [],
+            currentTool: null,
+            harvested: 0,
+            exp: 0,
+            level: 1,
+            expToNextLevel: 100,
+            water: 3,
+            fertilizer: 2,
+            growthStages: [
+                { name: "播种", icon: "fa-seedling" },
+                { name: "发芽", icon: "fa-spa" },
+                { name: "幼苗", icon: "fa-leaf" },
+                { name: "开花", icon: "fa-feather" },
+                { name: "结果", icon: "fa-apple-alt" },
+                { name: "成熟", icon: "fa-crown" }
+            ]
+        };
+
+        // DOM元素
+        const farmLand = document.getElementById('farmLand');
+        const plantBtn = document.getElementById('plantBtn');
+        const waterBtn = document.getElementById('waterBtn');
+        const fertilizeBtn = document.getElementById('fertilizeBtn');
+        const harvestBtn = document.getElementById('harvestBtn');
+        const gameMessage = document.getElementById('gameMessage');
+
+        // 初始化游戏
+        function initGame() {
+            // 创建土地地块
+            for (let i = 0; i < 10; i++) {
+                const plot = document.createElement('div');
+                plot.className = 'plot empty';
+                plot.dataset.index = i;
+                plot.addEventListener('click', handlePlotClick);
+                farmLand.appendChild(plot);
+
+                gameState.plots.push({
+                    element: plot,
+                    stage: -1, // -1表示空土地
+                    watered: false,
+                    fertilized: false
+                });
+            }
+            // 设置工具按钮事件
+            plantBtn.addEventListener('click', () => setCurrentTool('plant'));
+            waterBtn.addEventListener('click', () => setCurrentTool('water'));
+            fertilizeBtn.addEventListener('click', () => setCurrentTool('fertilize'));
+            harvestBtn.addEventListener('click', () => setCurrentTool('harvest'));
+
+            updateUI();
+        }
+
+        // 设置标签切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+            });
+        });
+
+        updateUI();
+
+
+        // 设置当前工具
+        function setCurrentTool(tool) {
+            gameState.currentTool = tool;
+
+            // 更新按钮状态
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.style.border = 'none');
+            event.currentTarget.style.border = '3px solid #FF9800';
+
+            showMessage(`已选择: ${getToolName(tool)}`);
+        }
+
+        // 获取工具名称
+        function getToolName(tool) {
+            switch (tool) {
+                case 'plant': return '播种';
+                case 'water': return '浇水';
+                case 'fertilize': return '施肥';
+                case 'harvest': return '收获';
+                default: return '无';
+            }
+        }
+
+        // 处理地块点击
+        function handlePlotClick(event) {
+            const plotIndex = parseInt(event.currentTarget.dataset.index);
+            const plot = gameState.plots[plotIndex];
+
+            if (gameState.currentTool === null) {
+                showMessage('请先选择一种工具');
+                return;
+            }
+
+            switch (gameState.currentTool) {
+                case 'plant':
+                    if (plot.stage === -1) {
+                        plantSeed(plotIndex);
+                    } else {
+                        showMessage('这块土地已经种植了作物');
+                    }
+                    break;
+
+                case 'water':
+                    if (plot.stage >= 0 && plot.stage < 5) {
+                        if (gameState.water > 0) {
+                            waterPlot(plotIndex);
+                        } else {
+                            showMessage('没有足够的浇水次数了');
+                        }
+                    } else {
+                        showMessage('现在不能浇水');
+                    }
+                    break;
+
+                case 'fertilize':
+                    if (plot.stage >= 0 && plot.stage < 5) {
+                        if (gameState.fertilizer > 0) {
+                            fertilizePlot(plotIndex);
+                        } else {
+                            showMessage('没有足够的肥料了');
+                        }
+                    } else {
+                        showMessage('现在不能施肥');
+                    }
+                    break;
+
+                case 'harvest':
+                    if (plot.stage === 5) {
+                        harvestPlot(plotIndex);
+                    } else {
+                        showMessage('作物还未成熟，不能收获');
+                    }
+                    break;
+            }
+        }
+
+        // 修改后的播种函数
+        function plantSeed(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+            plot.stage = 0;
+            plot.watered = false;
+            plot.fertilized = false;
+
+            plot.element.classList.remove('empty');
+            updatePlantAppearance(plotIndex);
+
+            showMessage('成功播种黑枸杞种子，请浇水或施肥促进生长！');
+            updateUI();
+        }
+
+        // 开始生长
+        function startGrowth(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+
+            if (plot.stage < 5) {
+                const stage = gameState.growthStages[plot.stage];
+                let duration = stage.duration;
+
+                // 如果浇过水，生长时间减少30%
+                if (plot.watered) duration *= 0.7;
+
+                // 如果施过肥，生长时间减少50%
+                if (plot.fertilized) duration *= 0.5;
+
+                plot.growthTimer = setTimeout(() => {
+                    plot.stage++;
+                    updatePlantAppearance(plotIndex);
+
+                    if (plot.stage < 5) {
+                        startGrowth(plotIndex);
+                    } else {
+                        showMessage('黑枸杞已成熟，可以收获了！');
+                        harvestBtn.disabled = false;
+                    }
+                }, duration);
+            }
+        }
+
+
+
+        // 手动生长函数
+        function advanceGrowthStage(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+
+            // 检查是否可以生长（需要浇水或施肥）
+            if (plot.stage < 5 && (plot.watered || plot.fertilized)) {
+                plot.stage++;
+                updatePlantAppearance(plotIndex);
+
+                // 重置浇水施肥状态，为下一阶段准备
+                plot.watered = false;
+                plot.fertilized = false;
+
+                if (plot.stage === 5) {
+                    showMessage('黑枸杞已成熟，可以收获了！');
+                    document.getElementById('harvestBtn').disabled = false;
+                } else {
+                    showMessage(`黑枸杞进入了新的生长阶段：${gameState.growthStages[plot.stage].name}`);
+                }
+
+                updateUI();
+            } else if (plot.stage < 5) {
+                showMessage('请先浇水或施肥以促进生长！');
+            }
+        }
+
+        // 修改后的浇水函数
+        function waterPlot(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+
+            if (plot.stage < 0) {
+                showMessage('请先播种！');
+                return;
+            }
+
+            if (plot.stage >= 5) {
+                showMessage('作物已成熟，无需再浇水');
+                return;
+            }
+
+            if (!plot.watered) {
+                plot.watered = true;
+                gameState.water--;
+                updatePlantAppearance(plotIndex);
+                showMessage('浇水成功！');
+
+                // 检查是否可以生长
+                advanceGrowthStage(plotIndex);
+                updateUI();
+            } else {
+                showMessage('这块地已经浇过水了');
+            }
+        }
+        // 修改后的施肥函数
+        function fertilizePlot(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+
+            if (plot.stage < 0) {
+                showMessage('请先播种！');
+                return;
+            }
+
+            if (plot.stage >= 5) {
+                showMessage('作物已成熟，无需再施肥');
+                return;
+            }
+
+            if (!plot.fertilized) {
+                plot.fertilized = true;
+                gameState.fertilizer--;
+                updatePlantAppearance(plotIndex);
+                showMessage('施肥成功！');
+
+                // 检查是否可以生长
+                advanceGrowthStage(plotIndex);
+                updateUI();
+            } else {
+                showMessage('这块地已经施过肥了');
+            }
+        }
+        // 更新植物外观显示
+        function updatePlantAppearance(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+            const stage = gameState.growthStages[plot.stage];
+
+            let statusText = '';
+            if (plot.stage < 5) {
+                if (!plot.watered && !plot.fertilized) {
+                    statusText = '<div class="status-need-care">需要浇水或施肥</div>';
+                } else if (plot.watered && !plot.fertilized) {
+                    statusText = '<div class="status-ready">已浇水，可施肥促进生长</div>';
+                } else if (!plot.watered && plot.fertilized) {
+                    statusText = '<div class="status-ready">已施肥，可浇水促进生长</div>';
+                } else {
+                    statusText = '<div class="status-growing">生长中...</div>';
+                }
+            }
+
+            plot.element.innerHTML = `
+                <div class="plant">
+                    <i class="plant-stage fas ${stage.icon}"></i>
+                    ${plot.watered ? '<div class="water-indicator">💧</div>' : ''}
+                    ${plot.fertilized ? '<div class="fert-indicator">🌱</div>' : ''}
+                    ${statusText}
+                </div>
+            `;
+
+            // 添加生长动画
+            const plantStage = plot.element.querySelector('.plant-stage');
+            plantStage.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+                plantStage.style.transform = 'scale(1)';
+            }, 100);
+        }
+        // 收获
+        function harvestPlot(plotIndex) {
+            const plot = gameState.plots[plotIndex];
+
+            // 计算收获奖励
+            let expGained = 50;
+            if (plot.watered) expGained += 20;
+            if (plot.fertilized) expGained += 30;
+
+            // 更新游戏状态
+            gameState.harvested++;
+            gameState.exp += expGained;
+
+            // 检查升级
+            if (gameState.exp >= gameState.expToNextLevel) {
+                gameState.level++;
+                gameState.exp -= gameState.expToNextLevel;
+                gameState.expToNextLevel = Math.round(gameState.expToNextLevel * 1.5);
+                showMessage(`恭喜！种植等级提升到 ${gameState.level} 级！`);
+            }
+
+            // 重置地块
+            plot.stage = -1;
+            plot.watered = false;
+            plot.fertilized = false;
+            plot.element.classList.add('empty');
+            plot.element.innerHTML = '';
+            plot.element.textContent = '点击播种';
+
+            if (plot.growthTimer) {
+                clearTimeout(plot.growthTimer);
+                plot.growthTimer = null;
+            }
+
+            showMessage(`收获成功！获得 ${expGained} 点经验值`);
+            updateUI();
+        }
+
+        // 显示消息
+        function showMessage(text) {
+            gameMessage.textContent = text;
+            gameMessage.style.display = 'block';
+
+            setTimeout(() => {
+                gameMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // 更新UI
+        function updateUI() {
+            document.getElementById('harvestedCount').textContent = gameState.harvested;
+            document.getElementById('expValue').textContent = gameState.exp;
+            document.getElementById('levelValue').textContent = gameState.level;
+            document.getElementById('waterCount').textContent = gameState.water;
+            document.getElementById('fertilizerCount').textContent = gameState.fertilizer;
+
+            // 更新经验进度条
+            const progressPercent = (gameState.exp / gameState.expToNextLevel) * 100;
+            document.getElementById('levelProgress').style.width = `${progressPercent}%`;
+
+            // 更新按钮状态
+            waterBtn.disabled = gameState.water <= 0;
+            fertilizeBtn.disabled = gameState.fertilizer <= 0;
+        }
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+
+</html>

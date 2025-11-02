@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬馨枸杞 - 元宇宙网页链接销售平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --secondary: #9370db;
+            --accent: #ff9800;
+            --dark: #1a1a2e;
+            --light: #f8f8ff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(147, 112, 219, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wallet-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 添加钱包状态样式 */
+        .wallet-connected {
+            color: #00ff88;
+        }
+
+        .wallet-disconnected {
+            color: #ff5555;
+        }
+
+        .buy-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* 添加钱包模态框样式 */
+        .wallet-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a3e, #2d1a4a);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(147, 112, 219, 0.4);
+        }
+
+        .btn-accent {
+            background: linear-gradient(45deg, var(--accent), #ff5722);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, var(--success), #20c997);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        .marketplace {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(147, 112, 219, 0.2);
+            color: var(--light);
+            border: 1px solid var(--secondary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--secondary);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .link-card {
+            background: rgba(38, 38, 62, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid rgba(147, 112, 219, 0.2);
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            border-color: var(--secondary);
+        }
+
+        .link-preview {
+            height: 160px;
+            background: linear-gradient(135deg, var(--dark), #2d2d4a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            z-index: 1;
+        }
+
+        .link-content {
+            padding: 15px;
+        }
+
+        .link-title {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-url {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .link-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .panel {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        input,
+        textarea,
+        select {
+            background: rgba(38, 38, 62, 0.8);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .user-links {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-link-item:last-child {
+            border-bottom: none;
+        }
+
+        .metaverse-view {
+            margin-top: 30px;
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metaverse-placeholder {
+            font-size: 4rem;
+            color: var(--secondary);
+            opacity: 0.5;
+        }
+
+        .metaverse-text {
+            text-align: center;
+            color: #aaa;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        /* 图片Logo容器样式 */
+        .logo-wrapper {
+            margin-right: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 图片Logo样式 - 关键尺寸控制 */
+        .logo-image {
+            height: 100px;
+            /* 与文字Logo总高度匹配 */
+            width: auto;
+            /* 保持宽高比 */
+            display: block;
+            object-fit: contain;
+            /* 确保图片完整显示 */
+            transition: all 0.3s ease;
+        }
+
+        /* 悬停效果 */
+        .logo-image:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        /* 确保新表单样式与元宇宙主题一致 */
+        .create-nft-section {
+            background: rgba(16, 16, 48, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="logo.png" alt="芬馨枸杞 Logo" class="logo-image">
+                <div class="logo-text">芬馨枸杞</div>
+            </div>
+            <!-- 修改后 - 添加ID以便JavaScript控制 -->
+            <div class="wallet-status">
+                <i class="fas fa-wallet wallet-disconnected" id="walletIcon"></i>
+                <div class="wallet-info">
+                    <div class="wallet-address" id="walletAddress">未链接钱包</div>
+                    <div class="wallet-balance" id="walletBalance">余额: 0 MLC</div>
+                </div>
+            </div>
+            <button class="connect-btn" id="connectWalletBtn">连接钱包</button>
+        </header>
+
+        <div class="main-content">
+            <div class="marketplace">
+                <h2 class="section-title">链接交易市场</h2>
+
+                <div class="filters">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">热门</button>
+                    <button class="filter-btn">最新</button>
+                    <button class="filter-btn">高价</button>
+                    <button class="filter-btn">我的收藏</button>
+                </div>
+
+                <div class="links-grid" id="linksContainer">
+                    <!-- 链接卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel">
+                    <h2 class="section-title">创建链接NFT</h2>
+                    <div class="create-form">
+                        <div class="form-group">
+                            <label for="linkTitle">链接标题</label>
+                            <input type="text" id="linkTitle" placeholder="输入链接标题">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkUrl">链接URL</label>
+                            <input type="text" id="linkUrl" placeholder="https://example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkDescription">链接描述</label>
+                            <textarea id="linkDescription" rows="3" placeholder="描述这个链接的内容和价值"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="linkCategory">分类</label>
+                            <select id="linkCategory">
+                                <option value="entertainment">娱乐</option>
+                                <option value="education">教育</option>
+                                <option value="business">商业</option>
+                                <option value="technology">技术</option>
+                                <option value="social">社交</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="linkPrice">价格 (ETH)</label>
+                            <input type="number" id="linkPrice" min="0.001" step="0.001" value="0.01">
+                        </div>
+                        <button class="btn btn-accent" id="createLinkBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>创建链接NFT</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2 class="section-title">我的链接</h2>
+                    <div class="user-links" id="userLinksContainer">
+                        <!-- 用户链接将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metaverse-view">
+            <i class="fas fa-vr-cardboard metaverse-placeholder"></i>
+            <div class="metaverse-text">
+                <h3>元宇宙展示厅</h3>
+                <p>连接钱包后，您可以在这里以3D形式查看您购买的链接</p>
+            </div>
+        </div>
+        <!-- 在元宇宙网页的适当位置添加创建表单 -->
+        <section class="create-nft-section">
+            <h2>创建链接NFT</h2>
+            <!-- 此处插入上面的表单HTML代码 -->
+        </section>
+        <footer>
+            <p>芬馨枸杞 &copy; 2025 - 元宇宙网页链接销售平台</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">
+        操作成功！
+    </div>
+
+    <div class="wallet-modal" id="walletModal">
+        <div class="modal-content">
+            <h3 class="modal-title">选择钱包连接</h3>
+            <div class="wallet-options">
+                <div class="wallet-option" id="metamaskOption">
+                    <i class="fab fa-ethereum wallet-icon"></i>
+                    <div>
+                        <div class="wallet-name">MetaMask</div>
+                        <div class="wallet-desc">浏览器扩展钱包，支持以太坊和兼容链</div>
+                    </div>
+                </div>
+                <div class="wallet-option" id="trustOption">
+                    <i class="fas fa-mobile-alt wallet-icon"></i>
+                    <div>
+                        <div class="wallet-name">Trust Wallet</div>
+                        <div class="wallet-desc">移动端钱包，支持多链和DeFi应用</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 添加钱包状态管理
+        let isWalletConnected = false;
+        let currentWalletAddress = '';
+        // 模拟数据 - 在实际应用中这些数据将从区块链获取
+        const sampleLinks = [
+            {
+                id: 1,
+                title: "加密艺术画廊",
+                url: "https://cryptoart.gallery",
+                description: "展示和交易数字艺术品的领先平台",
+                category: "entertainment",
+                price: 0.05,
+                owner: "0x742d...c291",
+                stats: {
+                    views: 1240,
+                    likes: 89,
+                    sales: 12
+                },
+                created: "2023-10-15"
+            },
+            {
+                id: 2,
+                title: "Web3开发教程",
+                url: "https://web3dev.tutorial",
+                description: "完整的区块链和智能合约开发教程",
+                category: "education",
+                price: 0.02,
+                owner: "0x8a3f...d472",
+                stats: {
+                    views: 3560,
+                    likes: 210,
+                    sales: 45
+                },
+                created: "2023-10-10"
+            },
+            {
+                id: 3,
+                title: "去中心化交易所",
+                url: "https://dex.trading",
+                description: "安全、透明的加密货币交易平台",
+                category: "business",
+                price: 0.1,
+                owner: "0x5b21...e8a3",
+                stats: {
+                    views: 8900,
+                    likes: 542,
+                    sales: 120
+                },
+                created: "2023-10-05"
+            },
+            {
+                id: 4,
+                title: "元宇宙社交网络",
+                url: "https://metaverse.social",
+                description: "在虚拟世界中连接和社交的新方式",
+                category: "social",
+                price: 0.08,
+                owner: "0x3c7a...f9b1",
+                stats: {
+                    views: 6700,
+                    likes: 389,
+                    sales: 67
+                },
+                created: "2023-09-28"
+            }
+        ];
+
+        // 用户拥有的链接
+        const userLinks = [
+            {
+                id: 5,
+                title: "NFT市场分析",
+                url: "https://nftanalysis.com",
+                description: "深入的NFT市场数据和趋势分析",
+                category: "technology",
+                price: 0.03,
+                created: "2023-10-20"
+            }
+        ];
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function () {
+                    // 添加DOM元素获取 - 推荐位置
+            const linksContainer = document.getElementById('linksContainer');
+            const userLinksContainer = document.getElementById('userLinksContainer');
+            // 渲染市场链接
+            renderMarketplaceLinks();
+
+            // 渲染用户链接
+            renderUserLinks();
+
+            // 设置事件监听器
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            document.getElementById('createLinkBtn').addEventListener('click', createLinkNFT);
+
+            // 设置筛选按钮
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // 在实际应用中，这里会根据筛选条件重新加载数据
+                    showNotification('筛选条件已更新');
+                });
+            });
+        });
+
+        // 渲染市场链接
+        function renderMarketplaceLinks() {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = '';
+
+            sampleLinks.forEach(link => {
+                const linkCard = document.createElement('div');
+                linkCard.className = 'link-card';
+                linkCard.innerHTML = `
+                    <div class="link-preview">
+                        <i class="fas fa-link link-icon"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3 class="link-title">${link.title}</h3>
+                        <div class="link-url">${link.url}</div>
+                        <div class="link-stats">
+                            <div class="stat"><i class="fas fa-eye"></i> ${link.stats.views}</div>
+                            <div class="stat"><i class="fas fa-heart"></i> ${link.stats.likes}</div>
+                            <div class="stat"><i class="fas fa-shopping-cart"></i> ${link.stats.sales}</div>
+                        </div>
+                        <div class="link-price">${link.price} ETH</div>
+                        <button class="btn btn-success" onclick="buyLink(${link.id})">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>购买链接</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(linkCard);
+            });
+        }
+
+        // 渲染用户链接
+        function renderUserLinks() {
+            const container = document.getElementById('userLinksContainer');
+            container.innerHTML = '';
+
+            if (userLinks.length === 0) {
+                container.innerHTML = '<p>您还没有创建任何链接</p>';
+                return;
+            }
+
+            userLinks.forEach(link => {
+                const linkItem = document.createElement('div');
+                linkItem.className = 'user-link-item';
+                linkItem.innerHTML = `
+                    <div>
+                        <div><strong>${link.title}</strong></div>
+                        <div style="font-size: 0.9rem; color: #aaa;">${link.url}</div>
+                    </div>
+                    <div>
+                        <span style="color: var(--accent); font-weight: bold;">${link.price} ETH</span>
+                    </div>
+                `;
+                container.appendChild(linkItem);
+            });
+        }
+        function validateNFTForm(data) {
+            const errors = [];
+            
+            if (!data.title || data.title.length < 3) {
+                errors.push('标题至少需要3个字符');
+            }
+            
+            if (!data.url || !isValidUrl(data.url)) {
+                errors.push('请输入有效的URL地址');
+            }
+            
+            if (!data.description || data.description.length < 10) {
+                errors.push('描述至少需要10个字符');
+            }
+            
+            if (isNaN(data.price) || data.price <= 0) {
+                errors.push('请输入有效的价格');
+            }
+            
+            return errors;
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+        
+            // 根据类型设置样式
+            notification.className = 'notification';
+            if (type === 'error') {
+                notification.style.background = 'var(--danger)';
+            } else if (type === 'warning') {
+                notification.style.background = 'var(--warning)';
+            } else {
+                notification.style.background = 'var(--success)';
+            }
+            
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        // 连接钱包函数
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // 请求账户访问
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const account = accounts[0];
+
+                    // 更新UI显示连接的钱包地址
+                    document.getElementById('walletAddress').textContent =
+                        `${account.substring(0, 6)}...${account.substring(account.length - 4)}`;
+
+                    showNotification('钱包连接成功');
+
+                    // 在实际应用中，这里会初始化Web3并加载用户数据
+                } catch (error) {
+                    console.error('用户拒绝钱包连接:', error);
+                    showNotification('钱包连接失败', 'error');
+                }
+            } else {
+                showNotification('请安装MetaMask或其他Web3钱包', 'error');
+            }
+        }
+        // 更新钱包UI状态函数
+        function updateWalletUI(connected, address = '', balance = 0) {
+            isWalletConnected = connected;
+            currentWalletAddress = address;
+
+            const walletIcon = document.getElementById('walletIcon');
+            const walletAddress = document.getElementById('walletAddress');
+            const walletBalance = document.getElementById('walletBalance');
+            const connectBtn = document.getElementById('connectWalletBtn');
+            const buyButtons = document.querySelectorAll('.buy-btn');
+
+            if (connected) {
+                walletIcon.classList.remove('wallet-disconnected');
+                walletIcon.classList.add('wallet-connected');
+                walletAddress.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+                walletBalance.textContent = `余额: ${balance} MLC`;
+                connectBtn.textContent = '断开连接';
+
+            // 修改购买按钮事件
+            document.querySelectorAll('.buy-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (!isWalletConnected) {
+                        alert('请先连接钱包');
+                        return;
+                    }
+
+                    const card = this.closest('.link-card');
+                    const title = card.querySelector('.link-title').textContent;
+                    const price = card.querySelector('.price').textContent;
+
+                // 执行购买逻辑
+                    console.log(`购买 ${title}, 价格: ${price}`);
+                    });
+                });
+            } else {
+                walletIcon.classList.remove('wallet-connected');
+                walletIcon.classList.add('wallet-disconnected');
+                walletAddress.textContent = '未链接钱包';
+                walletBalance.textContent = '余额: 0 MLC';
+                connectBtn.textContent = '连接钱包';
+
+                // 禁用购买按钮
+                buyButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.textContent = '购买链接';
+                });
+            }
+        }
+        // 创建链接NFT函数
+        function createLinkNFT() {
+            const title = document.getElementById('linkTitle').value;
+            const url = document.getElementById('linkUrl').value;
+            const description = document.getElementById('linkDescription').value;
+            const category = document.getElementById('linkCategory').value;
+            const price = document.getElementById('linkPrice').value;
+
+            if (!title || !url || !description) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+
+            // 在实际应用中，这里会调用智能合约创建NFT
+            // 此处仅模拟创建过程
+            showNotification('正在创建链接NFT...');
+
+            setTimeout(() => {
+                // 模拟成功创建
+                userLinks.unshift({
+                    id: userLinks.length + 1,
+                    title,
+                    url,
+                    description,
+                    category,
+                    price: parseFloat(price),
+                    created: new Date().toISOString().split('T')[0]
+                });
+
+                renderUserLinks();
+                showNotification('链接NFT创建成功！');
+
+                // 清空表单
+                document.getElementById('linkTitle').value = '';
+                document.getElementById('linkUrl').value = '';
+                document.getElementById('linkDescription').value = '';
+                document.getElementById('linkPrice').value = '0.01';
+            }, 2000);
+        }
+
+        // 购买链接函数
+        function buyLink(linkId) {
+            const link = sampleLinks.find(l => l.id === linkId);
+            if (!link) return;
+
+            // 检查是否已连接钱包
+            if (document.getElementById('walletAddress').textContent === '未连接钱包') {
+                showNotification('请先连接钱包', 'error');
+                return;
+            }
+
+            showNotification(`正在购买 "${link.title}"...`);
+
+            // 在实际应用中，这里会调用智能合约完成购买
+            setTimeout(() => {
+                showNotification(`成功购买 "${link.title}"！`);
+            }, 2000);
+        }
+        // 钱包连接按钮事件
+        document.getElementById('connectWalletBtn').addEventListener('click', function () {
+            
+            if (isWalletConnected) {
+                updateWalletUI(false);
+            } else {
+                document.getElementById('walletModal').style.display = 'flex';
+            }
+        });
+
+        // 钱包选项点击事件
+        document.getElementById('metamaskOption').addEventListener('click', function () {
+            // 模拟MetaMask连接
+            const address = '0x' + Math.random().toString(16).substr(2, 40);
+            const balance = Math.floor(Math.random() * 10000);
+            updateWalletUI(true, address, balance);
+            document.getElementById('walletModal').style.display = 'none';
+        });
+        // 显示通知函数
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+
+            // 根据类型设置背景色
+            if (type === 'error') {
+                notification.style.background = 'var(--danger)';
+            } else if (type === 'warning') {
+                notification.style.background = 'var(--warning)';
+            } else {
+                notification.style.background = 'var(--success)';
+            }
+
+            notification.style.display = 'block';
+
+            // 3秒后隐藏通知
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
