@@ -243,7 +243,11 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
-
+        /* 使用CSS来美化iframe，例如去掉边框 */
+        iframe {
+            border: none;
+            border-radius: 8px; /* 可选：添加圆角 */
+        }
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -610,15 +614,13 @@
         <section class="video-section">
             <h2 class="section-title">芬馨枸杞</h2>
             <p class="section-subtitle">通过以下视频了解青海黑枸杞与乡村助兴</p>
-
-            <div class="video-container">
-                <div class="video-placeholder">
-                    <i class="fas fa-play-circle"></i>
-                    <a href=" https://pan.baidu.com/s/1mub4kRHj1JHxcRtDnkUTAA?pwd=ug9e" target="_blank">点击这里观看视频</a>
-                    <p>点击播放产品宣传视频</p>
-                    
-                </div>
-            </div>
+            <iframe 
+                src="https://pan.baidu.com/s/1mub4kRHj1JHxcRtDnkUTAA?pwd=ug9e" 
+                width="800" 
+                height="450" 
+                frameborder="0" <!-- 建议使用CSS来去掉边框 -->
+                allowfullscreen>
+            </iframe>
         </section>
 
 
